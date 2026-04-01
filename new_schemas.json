@@ -1,0 +1,293 @@
+{
+  "ai-prompt-guard": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "allow_patterns": {
+          "items": { "type": "string" },
+          "default": {},
+          "type": "array"
+        },
+        "deny_patterns": {
+          "items": { "type": "string" },
+          "default": {},
+          "type": "array"
+        },
+        "match_all_roles": { "type": "boolean", "default": false },
+        "match_all_conversation_history": { "type": "boolean", "default": false }
+      }
+    },
+    "priority": 1072,
+    "type": "other",
+    "version": 0.1
+  },
+  "mcp-bridge": {
+    "schema": {
+      "properties": {
+        "command": { "type": "string", "minLength": 1 },
+        "args": { "type": "array", "minItems": 0, "items": { "type": "string" } },
+        "base_uri": { "minLength": 1, "type": "string", "default": "" }
+      },
+      "type": "object",
+      "required": ["command"]
+    },
+    "priority": 510,
+    "type": "other",
+    "version": 0.1
+  },
+  "ai-request-rewrite": {
+    "schema": {
+      "properties": {
+        "auth": {
+          "properties": {
+            "header": {
+              "type": "object",
+              "patternProperties": { "^[a-zA-Z0-9._-]+$": { "type": "string" } }
+            },
+            "query": {
+              "type": "object",
+              "patternProperties": { "^[a-zA-Z0-9._-]+$": { "type": "string" } }
+            }
+          },
+          "type": "object",
+          "additionalProperties": false
+        },
+        "prompt": { "type": "string", "description": "The prompt to rewrite client request." },
+        "timeout": {
+          "default": 30000,
+          "maximum": 60000,
+          "minimum": 1,
+          "description": "Total timeout in milliseconds for requests to LLM service, including connect, send, and read timeouts.",
+          "type": "integer"
+        },
+        "override": {
+          "type": "object",
+          "properties": {
+            "endpoint": { "type": "string", "description": "To be specified to override the endpoint of the AI service provider." }
+          }
+        },
+        "keepalive": { "type": "boolean", "default": true },
+        "provider": {
+          "description": "Name of the AI service provider.",
+          "type": "string",
+          "enum": ["openai", "deepseek", "anthropic", "gemini", "vertex-ai", "azure-openai"]
+        },
+        "keepalive_pool": { "minimum": 1, "default": 30, "type": "integer" },
+        "ssl_verify": { "type": "boolean", "default": true },
+        "options": {
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "Model to execute. Examples: \"gpt-3.5-turbo\" for openai, \"deepseek-chat\" for deekseek, or \"qwen-turbo\" for openai-compatible services"
+            }
+          },
+          "description": "Key/value settings for the model",
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "type": "object",
+      "required": ["prompt", "provider", "auth"]
+    },
+    "priority": 1073,
+    "type": "other",
+    "version": 0.1
+  },
+  "workflow": {
+    "schema": {
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "case": {
+                "items": { "anyOf": [{ "type": "array" }, { "type": "string" }] },
+                "type": "array",
+                "minItems": 1
+              },
+              "actions": { "type": "array", "items": { "type": "array", "minItems": 1 } }
+            },
+            "type": "object",
+            "required": ["actions"]
+          }
+        }
+      },
+      "type": "object",
+      "required": ["rules"]
+    },
+    "priority": 1006,
+    "type": "other",
+    "version": 0.1
+  },
+  "attach-consumer-label": {
+    "schema": {
+      "properties": {
+        "headers": {
+          "additionalProperties": { "type": "string", "pattern": "^\\$.*" },
+          "type": "object",
+          "minProperties": 1
+        }
+      },
+      "type": "object",
+      "required": ["headers"]
+    },
+    "priority": 2399,
+    "type": "other",
+    "version": 0.1
+  },
+  "brotli": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "min_length": { "minimum": 1, "default": 20, "type": "integer" },
+        "mode": { "minimum": 0, "default": 0, "type": "integer", "maximum": 2 },
+        "comp_level": { "minimum": 0, "default": 6, "type": "integer", "maximum": 11 },
+        "lgwin": {
+          "default": 19,
+          "type": "integer",
+          "enum": [0, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+        },
+        "lgblock": { "default": 0, "type": "integer", "enum": [0, 16, 17, 18, 19, 20, 21, 22, 23, 24] },
+        "vary": { "type": "boolean" },
+        "types": {
+          "anyOf": [{ "items": { "type": "string", "minLength": 1 }, "type": "array", "minItems": 1 }, { "enum": ["*"] }],
+          "default": ["text/html"]
+        },
+        "http_version": { "default": 1.1, "enum": [1.1, 1] }
+      }
+    },
+    "priority": 996,
+    "type": "other",
+    "version": 0.1
+  },
+  "degraphql": {
+    "schema": {
+      "properties": {
+        "query": { "minLength": 1, "type": "string", "maxLength": 1024 },
+        "variables": { "items": { "type": "string" }, "type": "array", "minItems": 1 },
+        "operation_name": { "minLength": 1, "type": "string", "maxLength": 1024 }
+      },
+      "type": "object",
+      "required": ["query"]
+    },
+    "priority": 509,
+    "type": "other",
+    "version": 0.1
+  },
+  "http-dubbo": {
+    "schema": {
+      "properties": {
+        "params_type_desc": { "type": "string", "default": "" },
+        "serialization_header_key": { "type": "string" },
+        "serialized": { "type": "boolean", "default": false },
+        "connect_timeout": { "type": "number", "default": 6000 },
+        "method": { "type": "string", "minLength": 1 },
+        "read_timeout": { "type": "number", "default": 6000 },
+        "service_name": { "type": "string", "minLength": 1 },
+        "service_version": { "pattern": "^\\d+\\.\\d+\\.\\d+", "default": "0.0.0", "type": "string" },
+        "send_timeout": { "type": "number", "default": 6000 }
+      },
+      "type": "object",
+      "required": ["service_name", "method"]
+    },
+    "priority": 504,
+    "type": "other",
+    "version": 0.1
+  },
+  "ai-rag": {
+    "schema": {
+      "properties": {
+        "embeddings_provider": {
+          "properties": {
+            "azure_openai": {
+              "properties": { "endpoint": { "type": "string" }, "api_key": { "type": "string" } },
+              "type": "object",
+              "required": ["endpoint", "api_key"]
+            }
+          },
+          "maxProperties": 1,
+          "type": "object",
+          "required": ["azure_openai"]
+        },
+        "type": "object",
+        "vector_search_provider": {
+          "properties": {
+            "azure_ai_search": {
+              "properties": { "endpoint": { "type": "string" }, "api_key": { "type": "string" } },
+              "type": "object",
+              "required": ["endpoint", "api_key"]
+            }
+          },
+          "maxProperties": 1,
+          "type": "object",
+          "required": ["azure_ai_search"]
+        }
+      },
+      "type": "object",
+      "required": ["embeddings_provider", "vector_search_provider"]
+    },
+    "priority": 1060,
+    "type": "other",
+    "version": 0.1
+  },
+  "ai-prompt-decorator": {
+    "schema": {
+      "properties": {
+        "prepend": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "content": { "type": "string", "minLength": 1 },
+              "role": { "type": "string", "enum": ["system", "user", "assistant"] }
+            },
+            "required": ["role", "content"]
+          }
+        },
+        "append": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "content": { "type": "string", "minLength": 1 },
+              "role": { "type": "string", "enum": ["system", "user", "assistant"] }
+            },
+            "required": ["role", "content"]
+          }
+        }
+      },
+      "type": "object",
+      "anyOf": [{ "required": ["prepend"] }, { "required": ["append"] }, { "required": ["append", "prepend"] }]
+    },
+    "priority": 1070,
+    "type": "other",
+    "version": 0.1
+  },
+  "ai-proxy": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "provider": { "type": "string", "enum": ["openai", "deepseek", "anthropic", "gemini", "vertex-ai", "azure-openai"] },
+        "auth": { "type": "object" },
+        "options": { "type": "object" },
+        "timeout": { "type": "integer", "default": 30000 },
+        "keepalive": { "type": "boolean", "default": true }
+      },
+      "required": ["provider", "auth"]
+    },
+    "priority": 1040,
+    "type": "other",
+    "version": 0.5
+  },
+  "ai-proxy-multi": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "balancer": { "type": "object" },
+        "instances": { "type": "array" }
+      },
+      "required": ["instances"]
+    },
+    "priority": 1041,
+    "type": "other",
+    "version": 0.5
+  }
+}

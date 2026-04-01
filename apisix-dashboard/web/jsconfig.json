@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "out",
+    "logs",
+    "tmp",
+    "temp",
+    ".git",
+    "*.log",
+    "apisix",
+    "openresty",
+    "nginx"
+  ]
+}
