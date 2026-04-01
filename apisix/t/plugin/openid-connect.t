@@ -1446,9 +1446,8 @@ true
                  ngx.HTTP_PUT,
                  [[{ "plugins": {
                             "openid-connect": {
-                                "client_id": "942299072001-vhduu1uljmdhhbbp7g22m3qsmo246a75.apps.googleusercontent.com",
-                                "client_secret": "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",
-                                "discovery": "https://accounts.google.com/.well-known/openid-configuration",
+                                "client_id": "x",
+                                "client_secret": "x",
                                 "redirect_uri": "https://iresty.com",
                                 "post_logout_redirect_uri": "https://iresty.com",
                                 "scope": "openid profile",
